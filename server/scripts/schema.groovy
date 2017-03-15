@@ -5,12 +5,15 @@
 // To run in Gremlin console, use the next two lines:
 // script = new File('/server/scripts/consultgraph-schema.groovy').text; []
 // :> @script
-
+schema.clear()
+///////////////////////////////////////////////////////////////
 // Property Keys
-// Check for previous creation of property key with ifNotExists()
+///////////////////////////////////////////////////////////////
 
 // Tenant
-schema.propertyKey('company').Text().
+schema.propertyKey('company').Text().ifNotExists().create()
+schema.propertyKey('logo').Text().ifNotExists().create()
+schema.propertyKey('tenantId').Int().ifNotExists().create()
 
 // Contact & Consultant
 schema.propertyKey('fname').Text().ifNotExists().create()
@@ -27,11 +30,12 @@ schema.propertyKey('facebook').Text().ifNotExists().create()
 schema.propertyKey('pintrest').Text().ifNotExists().create()
 
 
-// Product
+
+// Product & Brand
 schema.propertyKey('name').Text().create()
 schema.propertyKey('description').Text().ifNotExists().create()
 schema.propertyKey('productId').Text().ifNotExists().create()
-schema.propertyKey('productName').Int().ifNotExists().create()
+schema.propertyKey('productName').Text().ifNotExists().create()
 schema.propertyKey('link').Text().ifNotExists().create()
 
 
@@ -41,54 +45,49 @@ schema.propertyKey('created').Timestamp().ifNotExists().create()
 // Campaign
 schema.propertyKey('started').Timestamp().ifNotExists().create()
 schema.propertyKey('ended').Timestamp().ifNotExists().create()
+schema.propertyKey('doTwitter').Boolean().ifNotExists().create()
+schema.propertyKey('doFacebook').Boolean().ifNotExists().create()
+schema.propertyKey('doEmail').Boolean().ifNotExists().create()
+schema.propertyKey('doPinterest').Boolean().ifNotExists().create()
+schema.propertyKey('twitterMsg').Text().ifNotExists().create()
+schema.propertyKey('facebookMsg').Text().ifNotExists().create()
+schema.propertyKey('emailMsg').Text().ifNotExists().create()
+schema.propertyKey('productLink').Text().ifNotExists().create()
 
+//////////////////////////////////////////////////////////////////
+// Verticies
+//////////////////////////////////////////////////////////////////
 
-// Example of multiple property
-// schema.propertyKey('nickname').Text().multiple().create();
-// Example meta-property added to property:
-// schema.propertyKey('livedIn').Text().create()
-// schema.propertyKey('country').Text().properties('livedIn').create()
+schema.vertexLabel('TENANT').properties('tenantId','company', 'created').ifNotExists().create()
+schema.vertexLabel('CONSULTANT').properties('created','fname','lname', 'address', 'zip','state','city','geolocation','phone','email','twitter','facebook','pintrest').ifNotExists().create()
+schema.vertexLabel('BRAND').properties('created', 'name','link').ifNotExists().create()
+schema.vertexLabel('PRODUCT').properties('created','productName','description','productId', 'link').ifNotExists().create()
+schema.vertexLabel('CONTACT').properties('created','fname','lname', 'address', 'zip','state','city','geolocation','phone','email','twitter','facebook','pintrest').ifNotExists().create()
+schema.vertexLabel('CAMPAIGN').properties('created', 'started','ended','doTwitter','doFacebook','doEmail','doPinterest','twitterMsg','facebookMsg','emailMsg','productLink').ifNotExists().create()
+schema.vertexLabel('CAMPAIGN_RESULTS').properties('created').ifNotExists().create()
 
-// Vertex Labels
-schema.vertexLabel('author').ifNotExists().create()
-schema.vertexLabel('recipe').create()
-// Example of creating vertex label with properties
-// schema.vertexLabel('recipe').properties('name','instructions').create()
-schema.vertexLabel('ingredient').create()
-schema.vertexLabel('book').create()
-schema.vertexLabel('meal').create()
-schema.vertexLabel('reviewer').create()
-// Example of custom vertex id:
-// schema.propertyKey('city_id').Int().create()
-// schema.propertyKey('sensor_id').Uuid().create()
-// schema().vertexLabel('FridgeSensor').partitionKey('city_id').clusteringKey('sensor_id').create()
+//////////////////////////////////////////////////////////////////
+// Edges
+//////////////////////////////////////////////////////////////////
 
-// Edge Labels
-schema.edgeLabel('authored').ifNotExists().create()
-schema.edgeLabel('created').create()
-schema.edgeLabel('includes').create()
-schema.edgeLabel('includedIn').create()
-schema.edgeLabel('rated').properties('rating').connection('reviewer','recipe').create()
+schema.edgeLabel('E_OWNER').connection('TENANT','CONSULTANT').ifNotExists().create()
+schema.edgeLabel('E_CONSULTS').connection('TENANT','CONSULTANT').ifNotExists().create()
+schema.edgeLabel('E_CAMPAIGN').connection('CONSULTANT','CAMPAIGN').ifNotExists().create()
+schema.edgeLabel('E_RESULTS').connection('CAMPAIGN','CAMPAIGN_RESULTS').ifNotExists().create()
+schema.edgeLabel('E_FOCUSBRAND').connection('CAMPAIGN','BRAND').ifNotExists().create()
+schema.edgeLabel('E_FOCUSPRODUCT').connection('CAMPAIGN','PRODUCT').ifNotExists().create()
+schema.edgeLabel('E_SELLS').connection('CONSULTANT','BRAND').ifNotExists().create()
+schema.edgeLabel('E_PRODUCT').connection('BRAND','PRODUCT').ifNotExists().create()
+schema.edgeLabel('E_INTERESTED').connection('CONTACT','PRODUCT').ifNotExists().create()
+schema.edgeLabel('E_PURCHASED').connection('CONTACT','PRODUCT').ifNotExists().create()
+schema.edgeLabel('E_CUSTOMER').connection('CONSULTANT','CONTACT').ifNotExists().create()
+schema.edgeLabel('E_PARTICIPANT').connection('CAMPAIGN','CONTACT').ifNotExists().create()
+schema.edgeLabel('E_LEAD').connection('CONSULTANT','CONTACT').ifNotExists().create()
 
-// Vertex Indexes
-// Secondary
-schema.vertexLabel('author').index('byName').secondary().by('name').add()
-// Materialized
-schema.vertexLabel('recipe').index('byRecipe').materialized().by('name').add()
-schema.vertexLabel('meal').index('byMeal').materialized().by('name').add()
-schema.vertexLabel('ingredient').index('byIngredient').materialized().by('name').add()
-schema.vertexLabel('reviewer').index('byReviewer').materialized().by('name').add()
-// Search
-// schema.vertexLabel('recipe').index('search').search().by('instructions').asText().add()
-// schema.vertexLabel('recipe').index('search').search().by('instructions').asString().add()
-// If more than one property key is search indexed
-// schema.vertexLabel('recipe').index('search').search().by('instructions').asText().by('category').asString().add()
-
-// Edge Index
-schema.vertexLabel('reviewer').index('ratedByStars').outE('rated').by('stars').add()
-
-// Example of property index using meta-property 'livedIn':
-// schema().vertexLabel('author').index('byLocation').property('country').by('livedIn').add()
+////////////////////////////////////////////////////////////////////
+//Indexes
+///////////////////////////////////////////////////////////////////
+schema.vertexLabel('TENANT').index('byTenantId').secondary().by('tenantId').add()
 
 // Schema description
 // Use to check that the schema is built as desired
