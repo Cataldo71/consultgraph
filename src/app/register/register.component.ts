@@ -12,16 +12,16 @@ import {Observable} from "rxjs";
 export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.form = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      phone: ['', Validators.required],
-      email: ['', Validators.required],
-      address: ['', Validators.required],
-      zip: ['', Validators.required],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      company: ['', Validators.required],
-      website: ['', Validators.required]
+      firstName: ['Pat', Validators.required],
+      lastName: ['Cataldo', Validators.required],
+      phone: ['123456789', Validators.required],
+      email: ['email@myhost.com', Validators.required],
+      address: ['123 Goa Way', Validators.required],
+      zip: ['12345', Validators.required],
+      city: ['MyCity', Validators.required],
+      state: ['ST', Validators.required],
+      company: ['Poshy Posher', Validators.required],
+      website: ['www.myhost.com', Validators.required]
 
     });
   }
@@ -37,22 +37,26 @@ export class RegisterComponent implements OnInit {
       this.router = router;
     }
 
-  newTenant() {
-    return this.http.post('http://localhost:3000/tenants', '')
+  newTenant(data) {
+    return this.http.post('http://localhost:3000/tenants', data)
     // ...and calling .json() on the response to return data
-      .map((res: Response) => res.json())
+      .map(function (response) {
+        return response.json;
+      })
       //...errors if any
-      .catch((error: any) => Observable.throw(error.json().error || 'Server error'));
-    ;
+      .catch(function (error) {
+        return Observable.throw(error.json().error || 'server error')
+      }).subscribe();
+
   }
     // private userService: UserService,
     // private alertService: AlertService) { }
 
     onSubmit() {
       console.log("new registration form submitted");
-      console.log(this.form.controls);
-      console.log(this.newTenant());
-      //this.router.navigate(['/about']);
+      console.log(this.form.value);
+      console.log(this.newTenant(this.form.value));
+      this.router.navigate(['/home']);
     }
 
 }

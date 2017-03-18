@@ -21,11 +21,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, '/../dist')));
 
-// Set up resources
-//
-app.use('/users', users);
-app.use('/tenants', tenants);
-
 
 // error handler
 // app.use(function(err, req, res, next) {
@@ -43,6 +38,13 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
     next();
 });
+
+// Set up resources
+//
+app.use('/users', users);
+app.use('/tenants', tenants);
+
+
 app.use(function (req, res, next) {
     res.sendFile(path.join(__dirname + '/../dist/index.html')); // for 404 error send the index page from production build
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-class Tenant {
+export default class Tenant {
   constructor(id, name, created) {
     this.id = id;
     this.name = name;
