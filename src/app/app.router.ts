@@ -8,14 +8,19 @@ import {AppComponent} from './app.component';
 import {RegisterComponent} from './register/register.component'
 import {AboutComponent} from './about/about.component';
 import {HomeComponent} from './home/home.component';
-import {SigninComponent} from './signin/signin.component'
+import {SigninComponent} from './signin/signin.component';
+import {ContactsComponent} from './contacts/contacts.component';
+import {AddcontactComponent} from './addcontact/addcontact.component';
 
 export const router: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path: 'signin', component: SigninComponent},
   {path: 'home', component: HomeComponent},
   {path: 'about', component: AboutComponent},
-    {path: 'register', component: RegisterComponent}
+  {path: 'register', component: RegisterComponent},
+  {path: 'contacts', component: ContactsComponent},
+  {path: 'addcontact', component: AddcontactComponent}
+
 ];
 
 export const routes: ModuleWithProviders = RouterModule.forRoot(router);

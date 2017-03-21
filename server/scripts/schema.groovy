@@ -27,8 +27,7 @@ schema.propertyKey('email').Text().ifNotExists().create()
 schema.propertyKey('twitter').Text().ifNotExists().create()
 schema.propertyKey('facebook').Text().ifNotExists().create()
 schema.propertyKey('pintrest').Text().ifNotExists().create()
-
-
+schema.propertyKey('consultantId').Text().ifNotExists().create()
 
 // Product & Brand
 schema.propertyKey('name').Text().create()
@@ -58,7 +57,7 @@ schema.propertyKey('productLink').Text().ifNotExists().create()
 //////////////////////////////////////////////////////////////////
 
 schema.vertexLabel('TENANT').properties('tenantId','company', 'created').ifNotExists().create()
-schema.vertexLabel('CONSULTANT').properties('created','fname','lname', 'address', 'zip','state','city','geolocation','phone','email','twitter','facebook','pintrest').ifNotExists().create()
+schema.vertexLabel('CONSULTANT').properties('created','fname','lname', 'address', 'zip','state','city','geolocation','phone','email','twitter','facebook','pintrest','consultantId').ifNotExists().create()
 schema.vertexLabel('BRAND').properties('created', 'name','link').ifNotExists().create()
 schema.vertexLabel('PRODUCT').properties('created','productName','description','productId', 'link').ifNotExists().create()
 schema.vertexLabel('CONTACT').properties('created','fname','lname', 'address', 'zip','state','city','geolocation','phone','email','twitter','facebook','pintrest').ifNotExists().create()
@@ -87,6 +86,7 @@ schema.edgeLabel('E_LEAD').connection('CONSULTANT','CONTACT').ifNotExists().crea
 //Indexes
 ///////////////////////////////////////////////////////////////////
 schema.vertexLabel('TENANT').index('byTenantId').secondary().by('tenantId').add()
+schema.vertexLabel('CONSULTANT').index('byConsultantId').secondary().by('consultantId').add()
 
 // Schema description
 // Use to check that the schema is built as desired

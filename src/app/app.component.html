@@ -4,10 +4,15 @@
         <ul class="nav navbar-nav mr-auto" routerLinkActive="active">
             <li class="nav-item"><a class="nav-link" routerLink="home">Home</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="about">About</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="contacts">Contacts</a></li>
+
         </ul>
-      <ul class="nav navbar-nav navbar-right">
+      <ul *ngIf="auth.signInStatus()==false" class="nav navbar-nav navbar-right">
         <li class="nav-item"><a class="nav-link" routerLink="register">Register</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="signin">Sign In</a></li>
+      </ul>
+      <ul *ngIf="auth.signInStatus()==true" class="nav navbar-nav navbar-right">
+        <li class="nav-item"><a class="btn btn-sm btn-toolbar" (click)="auth.signOut()">Sign Out</a></li>
       </ul>
     </div>
 </nav>

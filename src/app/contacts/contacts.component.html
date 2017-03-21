@@ -1,0 +1,41 @@
+<div>
+  <h1>Contact List</h1>
+  <div class="row ">
+    <div class="col-md-2">
+      <button class="btn btn-lg btn-primary "
+              (click)="addContact('John/ Doe','123.456.7890','jdoe@gmail.com','123/ Goa/ Way')">Add Contact
+      </button>
+    </div>
+    <div class="col-md-10"><input class="form-control" id="searchinput" type="search" placeholder="Search..."></div>
+  </div>
+  <hr/>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-md-9">
+        <div class="list-group" *ngFor="let contact of contacts">
+          <div href="#" class="list-group-item">
+            <div class="row">
+              <div class="col-xs-offset-3 col-xs-6 >">
+                <img src="http://api.randomuser.me/portraits/men/49.jpg" alt="Scott Stevens"
+                     class="img-responsive img-circle"/>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-offset-3 ">
+                <h4 class="list-group-item-heading">{{contact.name}}</h4>
+              </div>
+              <div class="row">
+                <div class="col-xs-offset-3 col-xs-6">
+                  <span class="glyphicon glyphicon-envelope" data-toggle="tooltip" title="{{contact.email}}"></span>
+                  <span class="glyphicon glyphicon-earphone" data-toggle="tooltip" title="{{contact.phone}}"></span>
+                  <span class="glyphicon glyphicon-map-marker" data-toggle="tooltip" title="{{contact.address}}"></span>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

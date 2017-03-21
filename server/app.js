@@ -9,7 +9,7 @@ let express = require('express'),
 // Route Controllers
 //
 let tenants = require('./routes/tenants'),
-  users = require('./routes/users');
+  contacts = require('./routes/contacts');
 
 var app = express();
 
@@ -41,7 +41,7 @@ app.use(function (req, res, next) {
 
 // Set up resources
 //
-app.use('/users', users);
+app.use('/contacts', contacts);
 app.use('/tenants', tenants);
 
 

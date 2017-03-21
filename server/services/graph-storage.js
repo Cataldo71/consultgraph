@@ -15,11 +15,10 @@ const client = new dse.Client({
 );
 
 module.exports = {
-  addTenant: function addVertexFunction(tenantData, ownerData) {
+  addTenant: function addTenantVertex(tenantData, ownerData) {
     return new Promise(function (resolve, reject) {
       // Add the new tenant node
       //
-      const g = dseGraph.traversalSource(client);
 
       // Add the new owner as a consultant node
       //
@@ -43,50 +42,28 @@ module.exports = {
         resolve(results);
       }).catch(function (err) {
         logger.error(err);
+        reject(err);
       });
-      //const vertex  = results.first();
-
-      // g.addV("TENANT")
-      //   .property("tenantId", tenantData.tenantId)
-      //   .property( "company", tenantData.tenantName)
-      //   .property('created', tenantData.created)
-      //   .toList(function (err, data) {
-      //     if (err)
-      //       reject(err);
-      //     else {
-      //       logger.info('Tenant: ' + tenantData.tenantName + ' subgraph added with owner ' + ownerData.email + ' as owner.');
-      //       // phase 2
-      //       // add the owner
-      //       let tenant_v = data[0];
-      //       g.addV('CONSULTANT')
-      //         .property('fname', ownerData.firstName)
-      //         .property('lname', ownerData.lastName)
-      //         // .property('address', ownerData.address)
-      //         // .property('state', ownerData.state)
-      //         // .property('city', ownerData.city)
-      //         // .property('phone', parseInt(ownerData.phone))
-      //         .property('created', new Date())
-      //         .property('email', ownerData.email).toList(function (err,data) {
-      //           if(err)
-      //             reject(err); // todo: need to roll back a transaction here.
-      //           else {
-      //             logger.info('Consultant ' + ownerData.email + ' added');
-      //             //g.addEdge(tenant_v,data[0], 'OWNER').toList(function(err, data){
-      //              tenant_v.addEdge('OWNER', data[0]).toList(function(err, data){
-      //               if(err)
-      //                 reject(err);
-      //               else
-      //                 g.addEdge(tenant_v, data[0],'E_CONSULTS').toList(function(){
-      //                   if(err)
-      //                     reject(err);
-      //                   else
-      //                     resolve(data);
-      //                 });
-      //             });
-      //           }
-      //         });
-      //     }
-      //   });
+    });
+  },
+  getAllContacts: function getContactsForTenant(tenant, consultant) {
+    return new Promise(function (resolve, reject) {
+      const query = "g.V().has('tenantId','" + tenant + "').out('E_CONSULTS').has('consultantId','" + consultant + "').out('E_CUSTOMER')";
+      let res = [];
+      client.executeGraph(query).then(function (results) {
+        results.forEach(function (vertex) {
+          // 'created','fname','lname', 'address', 'zip','state','city','geolocation','phone','email','twitter','facebook','pintrest'
+          let fname = vertex.properties.fname[0] ? vertex.properties.fname[0].value : '',
+            lname = vertex.properties.lname[0] ? vertex.properties.lname[0].value : '',
+            address = vertex.properties.address[0] ? vertex.properties.address[0].value : '',
+            phone = vertex.properties.phone[0] ? vertex.properties.phone[0].value : '',
+            email = vertex.properties.email[0] ? vertex.properties.email[0].value : '';
+          res.push({firstName: fname, lastName: lname, address: address, phone: phone, email: email});
+        });
+        resolve(res);
+      }).catch(function (err) {
+        logger.error(err);
+      })
     });
   }
 };

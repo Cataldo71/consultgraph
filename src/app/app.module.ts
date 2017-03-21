@@ -12,6 +12,8 @@ import {AboutComponent} from './about/about.component';
 import {routes} from './app.router';
 import {HomeComponent} from './home/home.component';
 import {SigninComponent} from './signin/signin.component';
+import {ContactsComponent} from './contacts/contacts.component';
+import {AddcontactComponent} from './addcontact/addcontact.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +21,9 @@ import {SigninComponent} from './signin/signin.component';
         RegisterComponent,
       AboutComponent,
       HomeComponent,
-      SigninComponent
+      SigninComponent,
+      ContactsComponent,
+      AddcontactComponent,
     ],
     imports: [
         BrowserModule,
@@ -31,4 +35,5 @@ import {SigninComponent} from './signin/signin.component';
     bootstrap: [AppComponent]
 })
 export class AppModule {
+
 }

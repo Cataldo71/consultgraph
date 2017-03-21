@@ -1,0 +1,7 @@
+@charset "utf-8";
+
+.columns {
+  -moz-column-width: 11.5em; /* Firefox */
+  -webkit-column-width: 11.5em; /* webkit, Safari, Chrome */
+  column-width: 11.5em;
+}

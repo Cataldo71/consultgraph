@@ -26,8 +26,12 @@ export class AuthenticationService {
         return this;
     }
 
+  signInStatus() {
+    return localStorage.getItem('currentUser') ? true : false;
+  }
     signOut(): AuthenticationService {
         localStorage.removeItem('currentUser');
+      this.isLoggedIn = false;
         return this;
     }
 

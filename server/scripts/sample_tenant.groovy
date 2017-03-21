@@ -2,7 +2,7 @@
 // Add the sample tenant and owner/consultant
 ///
 tenant = graph.addVertex(label,'TENANT','tenantId',1234,'company','Sample Tenant', 'created',System.currentTimeMillis())
-owner = graph.addVertex(label,'CONSULTANT', 'fname','Tiffany','lname','Cataldo','created',System.currentTimeMillis())
+owner = graph.addVertex(label,'CONSULTANT', 'fname','Tiffany','lname','Cataldo','created',System.currentTimeMillis(), 'consultantId','1234')
 tenant.addEdge('E_OWNER',owner)
 tenant.addEdge('E_CONSULTS',owner)
 
