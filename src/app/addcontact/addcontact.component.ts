@@ -3,6 +3,7 @@ import {Router} from "@angular/router";
 import {FormGroup, FormControl, Validators, FormBuilder} from "@angular/forms";
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
 import {Observable} from "rxjs";
+import {AuthenticationService} from '../auth/authentication.service';
 
 @Component({
   selector: 'model-driven-formact',
@@ -13,7 +14,8 @@ export class AddcontactComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private router: Router,
-              private http: Http) {
+              private http: Http,
+              private authService: AuthenticationService) {
   }
 
   addContactForm: FormGroup;
@@ -32,15 +34,19 @@ export class AddcontactComponent implements OnInit {
   }
 
   newContact(data) {
-    return this.http.post('http://localhost:3000/contacts', data)
-    // ...and calling .json() on the response to return data
-      .map(function (response) {
+    let url = 'http://localhost:3000/contacts/' + this.authService.tenant() + '/' + this.authService.consultant();
+    const headers = new Headers({
+      'Content-Type': 'application/json',
+      'x-auth': 1//this.authService.currentUser.token
+    });
+
+    return this.http.post(url, data, headers)
+      .map(function (response: Response) {
         return response.json;
       })
-      //...errors if any
       .catch(function (error) {
-        return Observable.throw(error.json().error || 'server error')
-      }).subscribe();
+        return Observable.throw(error.json());
+      });
 
   }
 
@@ -49,7 +55,14 @@ export class AddcontactComponent implements OnInit {
     console.log(this.addContactForm.value);
     // create the new user
     //
-    this.newContact(this.addContactForm.value);
-    this.router.navigate(['/contacts']);
+    this.newContact(this.addContactForm.value).subscribe(
+      data => {
+      },
+      error => {
+        console.log(error.stack || error)
+      },
+      () => {
+        this.router.navigate(['/contacts'])
+      });
   }
 }

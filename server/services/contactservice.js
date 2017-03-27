@@ -18,7 +18,24 @@ module.exports = {
     });
 
   },
-  addNewContact: function (tenantId) {
+  addNewContact: function (tenantId, consultantId, contact) {
+    return new Promise(function (resolve, reject) {
+      let data = {
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        address: contact.address,
+        state: contact.state,
+        zip: contact.zip,
+        email: contact.email,
+        phone: contact.phone
+      };
+
+      graph.addContact(tenantId, consultantId, data).then(function (results) {
+        resolve(results);
+      }).catch(function (err) {
+        reject(err);
+      })
+    });
 
   }
-}
+};

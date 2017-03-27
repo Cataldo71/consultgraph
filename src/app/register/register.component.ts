@@ -39,14 +39,13 @@ export class RegisterComponent implements OnInit {
 
   newTenant(data) {
     return this.http.post('http://localhost:3000/tenants', data)
-    // ...and calling .json() on the response to return data
       .map(function (response) {
         return response.json;
       })
       //...errors if any
       .catch(function (error) {
-        return Observable.throw(error.json().error || 'server error')
-      }).subscribe();
+        return Observable.throw(error.json())
+      });
 
   }
     // private userService: UserService,
@@ -55,8 +54,17 @@ export class RegisterComponent implements OnInit {
     onSubmit() {
       console.log("new registration form submitted");
       console.log(this.form.value);
-      console.log(this.newTenant(this.form.value));
-      this.router.navigate(['/home']);
+      this.newTenant(this.form.value).subscribe(
+        data => {
+          console.log(data);
+        },
+        error => {
+          console.log(error);
+        },
+        () => {
+          this.router.navigate(['/home']);
+        }
+      );
     }
 
 }

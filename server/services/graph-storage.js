@@ -37,7 +37,7 @@ module.exports = {
         "tenant.addEdge('E_OWNER',owner);" +
         "tenant.addEdge('E_CONSULTS',owner);";
 
-      const results = client.executeGraph(query).then(function (results) {
+      client.executeGraph(query).then(function (results) {
         logger.info('New Tenant created'); // todo: add tenant info
         resolve(results);
       }).catch(function (err) {
@@ -63,8 +63,40 @@ module.exports = {
         resolve(res);
       }).catch(function (err) {
         logger.error(err);
+        reject(err);
       })
     });
-  }
+  },
+  addContact: function addContactVertex(tenantId, consultantId, contactData) {
+    return new Promise(function (resolve, reject) {
+
+      // Do it all in one query and handle the errors
+      //
+      const query =
+        "consultant = g.V().has('tenantId',tenantId).out('E_CONSULTS').has('consultantId',consultantId).next();" +
+        "newCustomer = graph.addVertex(label,'CONTACT','fname',firstName, 'lname',lastName, 'address',address,'state',state,'zip',zip," +
+        "'email',email, 'phone', phone, 'created', System.currentTimeMillis());" +
+        "consultant.addEdge('E_CUSTOMER',newCustomer);";
+
+      client.executeGraph(query, {
+        tenantId: tenantId,
+        consultantId: consultantId,
+        firstName: contactData.firstName,
+        lastName: contactData.lastName,
+        address: contactData.address,
+        state: contactData.state,
+        zip: contactData.zip,
+        email: contactData.email,
+        phone: contactData.phone
+      }).then(function (results) {
+        logger.info('New customer created'); // todo: add more info
+        resolve(results);
+      }).catch(function (err) {
+        logger.error(err);
+        reject(err);
+      });
+    });
+  },
+
 };
 

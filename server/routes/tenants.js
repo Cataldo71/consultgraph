@@ -3,10 +3,11 @@
  */
 let express = require('express'),
   router = express.Router(),
-  tenantService = require('../services/tenantservice');
+  tenantService = require('../services/tenantservice'),
+  logger = require('../services/logger');
 
 /* GET users listing. */
-router.post('/', function (req, res, next) {
+router.post('/', function (req, res) {
 
     // call the backend service to create the new tenant in the db.
 
@@ -19,6 +20,7 @@ router.post('/', function (req, res, next) {
     .then(function (result) {
       res.status(201).send(result);
     }).catch(function (err) {
+    logger.error(err);
     res.status(500).send('rut ro raggy');
   });
   //res.send('respond with a resource');
