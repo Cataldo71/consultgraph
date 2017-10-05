@@ -11,6 +11,7 @@ import {HomeComponent} from './home/home.component';
 import {SigninComponent} from './signin/signin.component';
 import {ContactsComponent} from './contacts/contacts.component';
 import {AddcontactComponent} from './addcontact/addcontact.component';
+import {ContactInfoComponent} from './contact-info/contact-info.component';
 
 export const router: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -19,7 +20,8 @@ export const router: Routes = [
   {path: 'about', component: AboutComponent},
   {path: 'register', component: RegisterComponent},
   {path: 'contacts', component: ContactsComponent},
-  {path: 'addcontact', component: AddcontactComponent}
+  {path: 'addcontact', component: AddcontactComponent},
+  {path: 'contact-info', component: ContactInfoComponent}
 
 ];
 

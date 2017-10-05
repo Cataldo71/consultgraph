@@ -2,6 +2,9 @@ import {AfterContentInit, Component, ContentChildren, OnInit, QueryList} from '@
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {Http, Response, Headers, RequestOptions} from '@angular/http';
+import {ContactServiceService} from '../contact-service.service';
+import {AuthenticationService} from '../auth/authentication.service';
+import {environment} from "../../environments/environment";
 
 
 export class Contact {
@@ -21,29 +24,48 @@ export class ContactsComponent implements OnInit {
   contacts: Array<Contact> = [];
   listWatcher: Observable<Array<Contact>>;
 
-  constructor(private router: Router, private http: Http) {
-
+  constructor(private router: Router, private http: Http, private css: ContactServiceService) {
+    this.contactService = css;
   }
 
+  private contactService: ContactServiceService;
   ngOnInit() {
-    //this.contacts.push(new Contact('Pat Cataldo','248.252.2457', 'cataldo71@gmail.com', '123 Goa Way'));
-    this.http.get('http://localhost:3000/contacts/1234/1234')
-    // ...and calling .json() on the response to return data
+    // Initialize the component with the list of contacts for the logged in user/tenant
+    //
+    let contacts = [], css = this.contactService;
+
+    this.http.get(environment.baseGraphUrl + '/contacts/1234/1234')
       .map(function (response) {
-        let clist = JSON.parse(response.json().toString()), contacts = [];
+        let clist = JSON.parse(response.json().toString());
         clist.forEach(function (contact) {
           contacts.push(new Contact(contact.firstName + ' ' + contact.lastName, contact.phone, contact.email, contact.address));
         });
+        contacts = contacts.sort((c1, c2) => {
+          if (c1.lastName < c2.lastName)
+            return -1;
+          if (c1.lastName > c2.lastName)
+            return 1;
+          return 0;
+        });
+        css.publishContacts(contacts);
+
         return contacts;
+
       })
       //...errors if any
       .catch(function (error) {
         return Observable.throw('server error')
       }).subscribe(c => this.contacts = c);
+
   }
 
   addContact(name, phone, email, address) {
     this.router.navigate(['/addcontact']);
+  }
+
+  goToContact(contact) {
+    this.contactService.setCurrentContact(contact);
+    this.router.navigate(['/contact-info']);
   }
 
 }

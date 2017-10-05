@@ -45,8 +45,6 @@ app.use('/contacts', contacts);
 app.use('/tenants', tenants);
 
 
-app.use(function (req, res, next) {
-    res.sendFile(path.join(__dirname + '/../dist/index.html')); // for 404 error send the index page from production build
-});
-
-module.exports = app;
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+})
